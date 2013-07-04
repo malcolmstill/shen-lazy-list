@@ -3,7 +3,10 @@
   X : (lazy (list A));
   ___________________
   X : (lazy-seq A);
-  
+
+  _________________
+  [] : (lazy-seq A);
+
   X : A; Y : (lazy-seq A);
   _______________________
   (freeze (cons X Y)) : (lazy-seq A);
@@ -50,8 +53,8 @@
   X -> (head (thaw X)) where (notcons? X))
 
 (define rest-lazy-seq
-  { (lazy-seq A) --> (seq A) }
-  X -> [] where (= (thaw (tail (thaw X))) [])
+  { (lazy-seq A) --> (lazy-seq A) }
+  [] -> []
   X -> (tail (thaw X)))
 
 (define rest
@@ -74,3 +77,7 @@
   { (A --> B) --> (seq A) --> (lazy-seq B) }
   F [] -> (freeze [])
   F X -> (lazy-cons (F (first X)) (lmap F (rest X))))
+
+(define iterate
+  { (A --> A) --> A --> (lazy-seq A) }
+  F X -> (lazy-cons X (iterate F (F X))))
